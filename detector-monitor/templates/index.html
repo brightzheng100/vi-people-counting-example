@@ -1,0 +1,107 @@
+<html>
+<head>
+  <title>People Counting Demo</title>
+  <style>
+    body { width: 650px; }
+    table.center {
+        width:70%; 
+        margin-left:15%; 
+        margin-right:15%;
+    }
+    span.highlight {
+        font-weight:bold;
+        color:blue;
+    }
+    div.detection-title {
+        font-weight:bold;
+        font-size: 40px;
+        text-align: center;
+    }
+    div.detection-number {
+        font-weight:bold;
+        font-size: 120px;
+        text-align: center;
+        color:blue;
+    }
+  </style>
+</head>
+<body>
+  <div>
+  <table class="center">
+    <tr>
+      <th>
+          <h2 style="color:blue;">People Counting Demo</h2>
+      </th>
+    </tr>
+    <tr>
+      <th>Device ID: {{ device_id }}</th>
+    </tr>
+    <tr>
+      <th><span id="when">&nbsp;</span></th>
+    </tr>
+    <tr>
+      <td><img id="detect" height="600px" src="/images/detect.jpg" alt="Prediction Image" /></td>
+      <td>
+        <table class="center">
+          {% for entity in entities %}
+          <tr>
+            <td style="white-space:nowrap"> &nbsp; 
+              <p><div class="detection-title"> Detected People </div></p>
+              <p><div id="classes" class="detection-number"> {{ entity["details"]|length }} </div></p>
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+      </td>
+    </tr>
+    <tr><td> &nbsp; </td></tr>
+    <tr><td> &nbsp; </td></tr>
+    <tr>
+      <td> &nbsp; Camera time: <span id="camtime" class="highlight"> {{ camera_time }} </span> seconds.</td>
+    </tr>
+    <tr>
+      <td> &nbsp; Inferencing time:
+          <span id="inftime" class="highlight"> {{ inferencing_time }} </span> seconds.
+      </td>
+    </tr>
+    <tr><td> &nbsp; </td></tr>
+    <tr>
+      <td> <p> &nbsp; <em>NOTE:</em> {{ kafka_msg }} </p></td>
+    </tr>
+  </table>
+  </div>
+  <script>
+    function refresh(d_image, d_date, d_classes, d_camtime, d_inftime) {
+      // auto refresh interval
+      var t = 2000;
+      (async function startRefresh() {
+        var address;
+        if(d_image.src.indexOf("?")>-1)
+          address = d_image.src.split("?")[0];
+        else
+          address = d_image.src;
+        d_image.src = address+"?time="+new Date().getTime();
+        const response = await fetch("/json");
+        const j = await response.json();
+        var when = new Date(j.detect.date * 1000);
+        var c = j.detect.entities[0].details.length;
+        var ct = j.detect.camtime;
+        var it = j.detect.time;
+        d_date.innerHTML = when;
+        d_classes.innerHTML = c;
+        d_camtime.innerHTML = ct;
+        d_inftime.innerHTML = it;
+        setTimeout(startRefresh, t);
+      })();
+    }
+    window.onload = function() {
+      var d_image = document.getElementById("detect");
+      var d_date = document.getElementById("when");
+      var d_classes = document.getElementById("classes");
+      var d_camtime = document.getElementById("camtime");
+      var d_inftime = document.getElementById("inftime");
+      refresh(d_image, d_date, d_classes, d_camtime, d_inftime);
+    }
+  </script>
+</body>
+</html>

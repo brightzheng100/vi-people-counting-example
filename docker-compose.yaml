@@ -1,0 +1,46 @@
+version: '3'
+services:
+  # detector-mqtt
+  detector-mqtt:
+    image: __DOCKERHUB_ID/detector-mqtt_amd64:1.0.0
+    networks:
+      - detector-network
+    ports:
+      - '1883:1883'
+
+  # detector-service
+  detector-service:
+    image: __DOCKERHUB_ID/detector-service_amd64:1.0.0
+    networks:
+      - detector-network
+    ports:
+      - '5252:80'
+
+  # detector-app
+  detector-app:
+    image: __DOCKERHUB_ID/detector-app_amd64:1.0.0
+    networks:
+      - detector-network
+    environment:
+      - "CAM_URL=__CAM_URL"
+      - "DEFAULT_CAM_URL=__DEFAULT_CAM_URL"
+      - "HZN_DEVICE_ID=__HZN_DEVICE_ID"
+      - "EVENTSTREAMS_BROKER_URLS="
+      - "EVENTSTREAMS_PUB_TOPIC="
+    depends_on:
+      - "detector-service"
+
+  # detector-monitor
+  detector-monitor:
+    image: __DOCKERHUB_ID/detector-monitor_amd64:1.0.0
+    networks:
+      - detector-network
+    ports:
+      - '5200:5200'
+    depends_on:
+      - "detector-mqtt"
+      - "detector-service"
+
+networks:
+  detector-network:
+    external: true
