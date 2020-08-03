@@ -1,4 +1,5 @@
-FROM python:3.7-alpine
+## BUILDER
+FROM python:3.7-alpine as builder
 
 RUN apk update && \
     apk add --no-cache \
@@ -13,16 +14,28 @@ RUN apk update && \
       jq && \
     rm -fr /tmp/*
 
-# Build and install kafka tools (should really use a 2-stage docker build here)
-RUN curl https://codeload.github.com/edenhill/kafkacat/tar.gz/master | tar xzf - && cd kafkacat-* && bash ./bootstrap.sh
+# Build and install kafka tools
+RUN curl https://codeload.github.com/edenhill/kafkacat/tar.gz/master | tar xzf - && cd kafkacat-master && bash ./bootstrap.sh
 RUN make -C /kafkacat-master bin-install
 
-# Install requests (REST API client)
-RUN pip install requests
+
+## FINAL
+FROM python:3.7-alpine
+
+# Install required components
+RUN apk update && \
+    apk add --no-cache \
+      mosquitto-clients && \
+    rm -fr /tmp/* && \
+    pip install requests
+
+# Copy the kafkacat from builder
+COPY --from=builder /usr/local/bin/kafkacat /usr/local/bin/
 
 # Copy over the source
-COPY app.py /
-WORKDIR /
+RUN mkdir /app
+COPY app.py /app
+WORKDIR /app
 
 # Run the daemon
 CMD ["python", "app.py"]

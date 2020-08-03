@@ -39,6 +39,7 @@ EVENTSTREAMS_PUB_TOPIC = get_from_env('EVENTSTREAMS_PUB_TOPIC', '')
 DEFAULT_CAM_URL = get_from_env('DEFAULT_CAM_URL', '')
 CAM_URL = get_from_env('CAM_URL', '')
 MQTT_PUB_TOPIC = get_from_env('MQTT_PUB_TOPIC', '/detect')
+SLEEP_BETWEEN_CALLS = get_from_env('SLEEP_BETWEEN_CALLS', '10')
 
 # Try to compute some kind of value for the CAM URL if one was not provided
 if '' == CAM_URL:
@@ -63,7 +64,6 @@ if '' != EVENTSTREAMS_BROKER_URLS and '' != EVENTSTREAMS_API_KEY and '' != EVENT
   KAFKA_PUB_COMMAND = 'kafkacat -P -b ' + EVENTSTREAMS_BROKER_URLS + ' -X api.version.request=true -X security.protocol=sasl_ssl -X sasl.mechanisms=PLAIN -X sasl.username=token -X sasl.password="' + EVENTSTREAMS_API_KEY + '" -t ' + EVENTSTREAMS_PUB_TOPIC + ' '
 else:
   KAFKA_PUB_COMMAND = ''
-SLEEP_BETWEEN_CALLS = 10
 
 logging.info("DEFAULT_CAM_URL: %s", DEFAULT_CAM_URL)
 logging.info("CAM_URL: %s", CAM_URL)
@@ -78,8 +78,8 @@ if __name__ == '__main__':
   while True:
     try:
       # Pause briefly (to not hog the CPU too much)
-      logging.info('Sleeping for %d seconds...', SLEEP_BETWEEN_CALLS)
-      time.sleep(SLEEP_BETWEEN_CALLS)
+      logging.info('Sleeping for %s seconds...', SLEEP_BETWEEN_CALLS)
+      time.sleep(int(SLEEP_BETWEEN_CALLS))
 
       # Request one run from the yolo REST service...
       logging.info('Initiating a request...')
