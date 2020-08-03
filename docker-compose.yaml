@@ -25,6 +25,7 @@ services:
       - "CAM_URL=__CAM_URL"
       - "DEFAULT_CAM_URL=__DEFAULT_CAM_URL"
       - "HZN_DEVICE_ID=__HZN_DEVICE_ID"
+      - "SLEEP_BETWEEN_CALLS=5"
       - "EVENTSTREAMS_BROKER_URLS="
       - "EVENTSTREAMS_PUB_TOPIC="
     depends_on:

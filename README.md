@@ -6,13 +6,15 @@ This is a very simple visual inferencing demo application, inspired by [MegaMosq
 
 ![Architecture Diagram](./architecture.svg)
 
-This is a microservices-based architecute, with a couple of components:
+This is a microservices-based architecture, with a couple of components:
 
 - `detector-service`: A visual inferencing service based on [YOLO/DarkNet](https://pjreddie.com/darknet/yolo/) models trained from the [COCO](http://cocodataset.org/#home) data set
 - `detector-app`: An app to pull photos from static URLs or instantly-captured by `detector-cam` service
 - `detector-monitor`: An web-based UI to monitor the detected people based on the input photo
 - `detector-mqtt`: A simple mqtt broker for communication between `detector-app` and `detector-monitor`
 - `detector-cam`: A RESTful service to drive webcam for instant photo taking
+
+> Note: I've built and tested it in my MacBook, but it should work in other environment too.
 
 ## Getting Started
 
@@ -38,9 +40,9 @@ quay.io/brightzheng100/detector-app_amd64           1.0.0     e6ec56508214      
 
 One can run the containers individually, but using `docker-compose` might be much easier so there is a `docker-compose.yaml`.
 
-There are two ways to feed a JGP formatted photo source for visual inferencing:
+There are two ways to feed a JPG formatted photo source for visual inferencing:
 
-- A static URL to point to a **JGP** formatted photo, or
+- A static URL to point to a **JPG** formatted photo, or
 - A RESTful service endpoint driving the mounted webcam
 
 > Note: Please refer to Advanced Topics for how to drive Facetime HD Camera in container in MacOS, [here](#advanced_topics).
@@ -184,6 +186,9 @@ $ cat docker-compose.yaml | \
 # Start up Docker Compose
 $ docker-compose -f _docker-compose.yaml up
 ```
+
+Similarly, we can access the monitor web app at: http://localhost:5200/.
+But this time, the Facetime HD camera will capture instant photos for visual inferencing!
 
 ## FAQ
 
