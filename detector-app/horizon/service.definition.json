@@ -16,7 +16,7 @@
       "label": "",
       "name": "CAM_URL",
       "type": "string",
-      "defaultValue": "http://detector-cam:8888/"
+      "defaultValue": "http://detector-cam:80/"
     },
     {
       "label": "",

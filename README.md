@@ -8,7 +8,7 @@ This is a very simple visual inferencing demo application, inspired by [MegaMosq
 
 This is a microservices-based architecture, with a couple of components:
 
-- `detector-service`: A visual inferencing service based on [YOLO/DarkNet](https://pjreddie.com/darknet/yolo/) models trained from the [COCO](http://cocodataset.org/#home) data set
+- `detector-service`: A visual inferencing service based on [YOLO/DarkNet](https://pjreddie.com/darknet/yolo/) models trained by the [COCO](http://cocodataset.org/#home) dataset
 - `detector-app`: An app to pull photos from static URLs or instantly-captured by `detector-cam` service
 - `detector-monitor`: An web-based UI to monitor the detected people based on the input photo
 - `detector-mqtt`: A simple mqtt broker for communication between `detector-app` and `detector-monitor`
@@ -21,6 +21,10 @@ This is a microservices-based architecture, with a couple of components:
 ### Build
 
 ```sh
+# Clone and switch to it
+git clone https://github.com/brightzheng100/people-counting-example.git
+cd people-counting-example
+
 # Expose variables, change to yours if you want
 export DOCKERHUB_ID=quay.io/brightzheng100
 
@@ -32,41 +36,53 @@ docker images | grep detector
 quay.io/brightzheng100/detector-service_amd64       1.0.0     60ae546acc3f        About a minute ago   688MB
 quay.io/brightzheng100/detector-mqtt_amd64          1.0.0     c7196c80ba5b        About a minute ago   10.1MB
 quay.io/brightzheng100/detector-monitor_amd64       1.0.0     b402056b5f36        About a minute ago   84.1MB
-quay.io/brightzheng100/detector-cam_amd64           1.0.0     1f97bf2571b5        About a minute ago   117MB
-quay.io/brightzheng100/detector-app_amd64           1.0.0     e6ec56508214        2 minutes ago        718MB
+quay.io/brightzheng100/detector-cam_amd64           1.0.0     1f97bf2571b5        About a minute ago   118MB
+quay.io/brightzheng100/detector-app_amd64           1.0.0     e6ec56508214        2 minutes ago        95.7MB
 ```
 
 ### Run
 
-One can run the containers individually, but using `docker-compose` might be much easier so there is a `docker-compose.yaml`.
+You can run the containers individually, but using `docker-compose` might be much easier so there is a `docker-compose.yaml`.
 
 There are two ways to feed a JPG formatted photo source for visual inferencing:
 
 - A static URL to point to a **JPG** formatted photo, or
 - A RESTful service endpoint driving the mounted webcam
 
-> Note: Please refer to Advanced Topics for how to drive Facetime HD Camera in container in MacOS, [here](#advanced_topics).
-
 ```sh
 # Create a dedicated Docker network
 docker network create detector-network
 
 # Expose variables
-export DOCKERHUB_ID=quay.io/brightzheng100
-export CAM_URL=https://upload.wikimedia.org/wikipedia/commons/9/9a/Backstreet_Boys_2019_by_Glenn_Francis.jpg
+export DOCKERHUB_ID="quay.io/brightzheng100"
+export CAM_URL="https://upload.wikimedia.org/wikipedia/commons/9/9a/Backstreet_Boys_2019_by_Glenn_Francis.jpg"
 #export CAM_URL=https://steemitimages.com/DQmR4ms4BbAp763ttDF8juEu8KyoR2CrVc7TDdmxYfTRYDG/happy-people-1050x600.jpg
 
-# Update the variables accordingly
+# Update the variables accordingly and up
 cat docker-compose.yaml | \
     sed "s|__DOCKERHUB_ID__|${DOCKERHUB_ID}|g" | \
     sed "s|__CAM_URL__|${CAM_URL}|g" | \
     sed "s|__DEFAULT_CAM_URL__|${CAM_URL}|g" | \
     sed "s|__HZN_DEVICE_ID__|$(hostname)|g" | \
-    sed "s|__SLEEP_BETWEEN_CALLS__|5|g" \
-    > _docker-compose.yaml
+    sed "s|__SLEEP_BETWEEN_CALLS__|5|g" | \
+	docker-compose -f - up
+```
 
-# Start up Docker Compose, based on the generated _docker-compose.yaml
-docker-compose -f _docker-compose.yaml up
+> Note: Please refer to Advanced Topics for how to drive Facetime HD Camera in container in MacOS, [here](#advanced_topics). But if your Docker container can access camera directly, try this instead:
+
+```sh
+# Expose variables
+export DOCKERHUB_ID="quay.io/brightzheng100"
+export CAM_URL="http://detector-cam:80/"
+
+# Update the variables accordingly and up
+cat docker-compose-with-cam.yaml | \
+    sed "s|__DOCKERHUB_ID__|${DOCKERHUB_ID}|g" | \
+    sed "s|__CAM_URL__|${CAM_URL}|g" | \
+    sed "s|__DEFAULT_CAM_URL__|${CAM_URL}|g" | \
+    sed "s|__HZN_DEVICE_ID__|$(hostname)|g" | \
+    sed "s|__SLEEP_BETWEEN_CALLS__|5|g" | \
+	docker-compose -f - up
 ```
 
 ### Monitor
@@ -74,7 +90,7 @@ docker-compose -f _docker-compose.yaml up
 We can access the simple monitor web app at: http://localhost:5200/
 ![Monitor UI](./misc/monitor-ui.jpg)
 
-> Note: refer to [Advanced Topics](#advanced_topics) for how to capture live pothos for people counting.
+> Note: refer to [Advanced Topics](#advanced_topics) for how to use camera to capture live pothos for people counting.
 
 ### Release (optional)
 
@@ -93,7 +109,7 @@ make push-local
 
 ### Clean Up
 
-Press CTL + C to stop the Docker Compose if it's still running, and then:
+Press `CTL + c` to stop the Docker Compose if it's still running, and then:
 
 ```sh
 # Delete the running containers and remove the local images
@@ -138,9 +154,13 @@ $ docker-machine create -d virtualbox \
 # Stop it to configure stuff
 $ docker-machine stop ${DOCKER_MACHINE}
 
-# In VirtualBox, select the VM we just created, namely webcam, then:
-# 1. Settings -> Display: Video Memory, change it from 0 to 64M; Check "Enable 3D acceleration";
-# 2. Settings -> Ports: Check "Enable USB Controller", choose "USB 2.0 (EHCI) Controller";
+# In VirtualBox, select the VM we just created, namely `webcam`, then:
+# 1. In Display tab: 
+# - `Video Memory`, change it to 64M;
+# - Make sure `Graphics Controller` is set as `VMSVGA`;
+# - Check `Enable 3D acceleration`
+# 2. In Ports tab:
+# - Check `Enable USB Controller`, choose `USB 2.0 (EHCI) Controller`
 
 # Start webcam
 $ docker-machine start ${DOCKER_MACHINE}
@@ -163,7 +183,10 @@ Video Input Devices: 1
 $ vboxmanage controlvm "${DOCKER_MACHINE}" webcam attach .1
 
 # Run the restcam container
-$ ( cd detector-cam && make run-in-mac )
+(
+	export DOCKERHUB_ID=quay.io/brightzheng100
+	cd detector-cam && make run-in-mac
+)
 ```
 
 Open another termimal (as to make sure we're with the "local" Docker env).
@@ -179,23 +202,26 @@ $ eval $(docker-machine env -u)
 # Now re-run the detector-app to pick up the photo source, from webcam
 $ export CAM_URL=http://$(docker-machine ip ${DOCKER_MACHINE}):8888
 
-# Genereate the docker compose file
+# Update some variables and up
 cat docker-compose.yaml | \
     sed "s|__DOCKERHUB_ID__|${DOCKERHUB_ID}|g" | \
     sed "s|__CAM_URL__|${CAM_URL}|g" | \
     sed "s|__DEFAULT_CAM_URL__|${CAM_URL}|g" | \
     sed "s|__HZN_DEVICE_ID__|$(hostname)|g" | \
-    sed "s|__SLEEP_BETWEEN_CALLS__|5|g" \
-    > _docker-compose.yaml
-
-# Start up Docker Compose
-$ docker-compose -f _docker-compose.yaml up
+    sed "s|__SLEEP_BETWEEN_CALLS__|5|g" | \
+	docker-compose -f - up
 ```
 
 Similarly, we can access the monitor web app at: http://localhost:5200/.
 But this time, the Facetime HD camera will capture instant photos for visual inferencing!
 
-### Run such Visual Inferencing at Edge Sites, at scale
+Do remember to detach the camera as part of the clean up:
+
+```sh
+vboxmanage controlvm "${DOCKER_MACHINE}" webcam detach
+```
+
+### Run such Visual Inferencing workstation at Edge Sites, at scale
 
 While rolling out such workstations to many Edge Sites, we need an Edge Solution to manage all these, at scale.
 
@@ -203,57 +229,4 @@ The architcture will be evolving to something like this:
 
 ![Architecture Diagram With IEAM](misc/architecture-with-ieam.png)
 
-Please refer to [here](IEAM.md) for detailed guide.
-
-## FAQ
-
-### How to check what resolutions are supported with the attached webcam?
-
-```sh
-$ docker ps
-CONTAINER ID        IMAGE                                        COMMAND             CREATED             STATUS              PORTS                  NAMES
-911787df9f47        quay.io/brightzheng100/restcam_amd64:1.0.0   "./start.sh"        6 seconds ago       Up 5 seconds        0.0.0.0:8888->80/tcp   restcam
-
-$ docker exec -it 911787df9f47 sh
-
-$ apt-get install v4l-utils
-
-$ v4l2-ctl --info
-Driver Info (not using libv4l2):
-	Driver name   : uvcvideo
-	Card type     : VirtualBox Webcam - FaceTime HD
-	Bus info      : usb-0000:00:06.0-1
-	Driver version: 4.9.93
-	Capabilities  : 0x84200001
-		Video Capture
-		Streaming
-		Extended Pix Format
-		Device Capabilities
-	Device Caps   : 0x04200001
-		Video Capture
-		Streaming
-		Extended Pix Format
-
-$ v4l2-ctl --list-formats-ext
-ioctl: VIDIOC_ENUM_FMT
-	Index       : 0
-	Type        : Video Capture
-	Pixel Format: 'MJPG' (compressed)
-	Name        : Motion-JPEG
-		Size: Discrete 640x480
-			Interval: Discrete 0.033s (30.000 fps)
-			Interval: Discrete 0.040s (25.000 fps)
-			Interval: Discrete 0.050s (20.000 fps)
-			Interval: Discrete 0.067s (15.000 fps)
-			Interval: Discrete 0.100s (10.000 fps)
-			Interval: Discrete 0.200s (5.000 fps)
-		Size: Discrete 1280x720
-			Interval: Discrete 0.033s (30.000 fps)
-			Interval: Discrete 0.040s (25.000 fps)
-			Interval: Discrete 0.050s (20.000 fps)
-			Interval: Discrete 0.067s (15.000 fps)
-			Interval: Discrete 0.100s (10.000 fps)
-			Interval: Discrete 0.200s (5.000 fps)
-```
-
-So the built-in FaceTime HD Camera supports `640x480` and `1280x720`.
+Please refer to [here](IEAM.md) for the detailed guide.

@@ -1,7 +1,7 @@
-# Edge Device & Service Management By IBM Edge Application Manager (IEAM)
+# Embrace Edge Computing By Adopting IBM Edge Application Manager (IEAM)
 
-The intent of this doc is to walk you through how to build an Edge Node and run all the demo services whitin it.
-And you can imagine how easily to roll out such Edge Nodes to many sites, which is the amazing part of IEAM: to manage edge devices, at scale.
+The intent of this doc is to walk you through how to build an Edge Node and run the demo services within it.
+And you can imagine how easily to roll out such Edge Nodes to many sites, which is one of the amazing part of IEAM: to manage edge services, at scale.
 
 ## Architecture
 
@@ -10,9 +10,9 @@ And you can imagine how easily to roll out such Edge Nodes to many sites, which 
 ## Assumptions
 
 Let's assume that:
-1. The IBM Edge Application Server (IEAM) is installed on OpenShift Container Platform (OCP) deployed on prem, or cloud;
-2. Within the laptop, we've logged into OCP by `oc login`;
-3. We're going to set up the Edge Node based on a Ubuntu VM.
+- The IBM Edge Application Server (IEAM) v4.1 is installed on OpenShift Container Platform (OCP) deployed on prem, or cloud;
+- Within the laptop, we've logged into OCP by `oc login`;
+- We're going to set up the Edge Node based on a Ubuntu VM.
 
 ## Get started
 
@@ -20,9 +20,9 @@ Let's assume that:
 
 Let's assume that a Ubuntu Bionic VM has been set up in VirtualBox.
 
-By the way, there is a permission issue which will cause the VM crash once the app tries to talk to the Facetime HD Camera.
-My current workaround to start VirtualBox as root: `sudo virtualbox`.
-Check out here for follow-up: https://forums.virtualbox.org/viewtopic.php?f=8&t=99299&p=481734#p481734
+By the way, there is a permission issue which will cause the VM crash once the app tries to connect the Facetime HD Camera.
+My current workaround is to start VirtualBox as root: `sudo virtualbox`.
+Check out the forum post here for the follow-up: https://forums.virtualbox.org/viewtopic.php?f=8&t=99299&p=481734#p481734
 
 We need to stop the VM and do some configuration.
 
@@ -79,23 +79,17 @@ cp ~/workspaces/cloud-paks/IEAM/_download/horizon-edge-packages-4.1.0.tar.gz ./
 # ./edgeNodeFiles.sh <edge-device-type> -t
 #   <edge-device-type>: valid <edge-device-type> values: 32-bit-ARM, 64-bit-ARM, x86_64-Linux, macOS, x86_64-Cluster
 #   -d <distribution>: valid options are 'bionic', 'xenial', 'stretch', defaults to 'bionic'. Flag is ignored with macOS and x86_64-Cluster.
-export CLUSTER_URL=https://$(oc get routes icp-console -o jsonpath='{.spec.host}' -n kube-system)
-export CLUSTER_USER=admin
-export CLUSTER_PW=cFzqXwEFq796gV5Sf4xg44khxkCEnNG5
+export CLUSTER_URL="https://$(oc get routes icp-console -o jsonpath='{.spec.host}' -n kube-system)"
+export CLUSTER_USER="admin"
+export CLUSTER_PW="<YOUR IEAM ADMIN PASSWORD>"
 ./edgeNodeFiles.sh x86_64-Linux -t -d bionic
 
 # Check the files generated
 ls -l
--rw-r--r--  1 brightzheng  staff        319 Aug  5 17:24 agent-install.cfg
--rw-r--r--  1 brightzheng  staff       2021 Aug  5 17:24 agent-install.crt
--rwxr-xr-x  1 brightzheng  staff      69657 Aug  5 17:24 agent-install.sh
 -rw-r--r--  1 brightzheng  staff   35920785 Aug  5 17:24 agentInstallFiles-x86_64-Linux.tar.gz
--rw-r--r--  1 brightzheng  staff      43360 Jun  4 15:04 bluehorizon_2.26.12~ppa~ubuntu.bionic_all.deb
--rwxr-xr-x  1 brightzheng  staff      19794 Aug  5 17:23 edgeNodeFiles.sh
--rw-r--r--  1 brightzheng  staff   16386958 Jun  4 15:04 horizon-cli_2.26.12~ppa~ubuntu.bionic_amd64.deb
 -rw-r--r--  1 brightzheng  staff  359830572 Aug  5 17:23 horizon-edge-packages-4.1.0.tar.gz
--rw-r--r--  1 brightzheng  staff   19470100 Jun  4 15:04 horizon_2.26.12~ppa~ubuntu.bionic_amd64.deb
 -rw-------  1 brightzheng  staff        179 Aug  5 17:24 key.txt
+...
 
 # And the content of the final .gz file
 tar -tvf agentInstallFiles-x86_64-Linux.tar.gz
@@ -108,9 +102,9 @@ tar -tvf agentInstallFiles-x86_64-Linux.tar.gz
 ```
 
 > Note: 
-> 1. The `agentInstallFiles-XXX.tar.gz` will be the zipped file that to be handed over to IEAM Node Admin;
-> 2. A key has been generated also, as `key.txt`, which should be handed over to IEAM Node Admin as well -- we can generate different keys for different IEAM Node Admins and/or different Edge Node(s);
-> 3. This procedure is to generate files for Edge Device. To generate files for Edge Cluster (e.g. K8s/OCP), intead of Edge Device, the procedure is slightly different, please consult the doc [here](https://www.ibm.com/support/knowledgecenter/SSFKVV_4.1/hub/gather_files.html).
+> - The `agentInstallFiles-XXX.tar.gz` will be the zipped file that to be handed over to IEAM Node Admin;
+> - A key has been generated also, as `key.txt`, which should be handed over to IEAM Node Admin as well -- we can generate different keys for different IEAM Node Admins, which are managed centrally;
+> - This procedure is to generate files for Edge Device. To generate files for Edge Cluster (e.g. K8s/OCP), instead of Edge Device, the procedure is slightly different. Please consult the doc [here](https://www.ibm.com/support/knowledgecenter/SSFKVV_4.1/hub/gather_files.html).
 
 
 ### Register the VM as Edge Node by IEAM Node Admin
@@ -169,7 +163,7 @@ $ sudo usermod -aG docker $(whoami) # remember to log out and in again to use `d
 
 # Export the auth with the key
 $ eval export $(cat agent-install.cfg)
-$ export HZN_EXCHANGE_USER_AUTH=iamapikey:"$( cat key.txt | jq -r '.apikey' )"
+$ export HZN_EXCHANGE_USER_AUTH="iamapikey:$( cat key.txt | jq -r '.apikey' )"
 
 # Define the node policy, refer to /horizon/node.policy.json,
 # which are some arbitrary attributes to be as properties and constraints
@@ -249,16 +243,16 @@ pwd
 
 # Export the auth with the key
 eval export $(cat agent-install.cfg)
-export HZN_EXCHANGE_USER_AUTH=iamapikey:"$( cat key.txt | jq -r '.apikey' )"
+export HZN_EXCHANGE_USER_AUTH="iamapikey:$( cat key.txt | jq -r '.apikey' )"
 
 # cd to the top folder
 cd $(git rev-parse --show-toplevel)
 
 # Register the "bundled" services as a logical service
-export DOCKERHUB_ID=quay.io/brightzheng100
+export DOCKERHUB_ID="quay.io/brightzheng100"
 cat horizon/service.definition.json | \
   sed "s|__DOCKERHUB_ID__|${DOCKERHUB_ID}|g" | \
-hzn exchange service publish -f- -P -O
+  hzn exchange service publish -f- -P -O
 ```
 
 Once the service is published, we can check it out by:
@@ -275,7 +269,7 @@ hzn exchange service list
 
 IEAM Service/Node Admin can deploy services, based on deployment `policy` and/or `pattern`, to Edge Nodes.
 
-Let's do it in our laptop, not the Edge Node -- but we can do anywhere.
+Let's do it in our laptop, not the Edge Node -- but we can do anywhere as long as we have the right key.
 
 ```sh
 # cd to the top folder
@@ -320,7 +314,7 @@ e61a26797f29        quay.io/brightzheng100/detector-app_amd64       "python app.
 
 ### The IEAM Hub
 
-We can visualize the Edge Nodes and services through IEAM Hub.
+We can visualize the managed Edge Nodes and services through IEAM Hub.
 
 For example:
 
@@ -332,7 +326,7 @@ We now can access the Edge Node's `detector-monitor` container through exposed p
 
 http://192.168.56.101:5200
 
-And viola, the camera will capture live photos for visual inferencing and counting the people:
+As expected, the camera will capture live photos for visual inferencing and count the people:
 
 ![Monitor UI With IEAM](misc/monitor-ui-with-ieam.png)
 
@@ -354,7 +348,7 @@ hzn exchange deployment removepolicy ${HZN_ORG_ID}/policy-${SERVICE_NAME}_${SERV
 
 ### Remove the services
 
-To remove all services involded:
+To remove the services involved:
 
 ```sh
 # cd to the top folder
@@ -365,7 +359,7 @@ eval $(hzn util configconv -f .horizon/hzn.json)
 hzn exchange service remove "${HZN_ORG_ID}/${SERVICE_NAME}_${SERVICE_VERSION}_amd64" -f
 ```
 
-### Unregister the Edge Node
+### Unregister the Edge Node from IEAM
 
 Log into the Edge Node:
 
