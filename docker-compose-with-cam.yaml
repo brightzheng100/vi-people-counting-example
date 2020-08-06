@@ -1,5 +1,16 @@
 version: '2'
 services:
+  # detector-cam
+  detector-cam:
+    image: __DOCKERHUB_ID__/detector-cam_amd64:1.0.0
+    networks:
+      - detector-network
+    privileged: true
+    devices:
+      - /dev/video0:/dev/video0
+    ports:
+      - '8888:80'
+
   # detector-mqtt
   detector-mqtt:
     image: __DOCKERHUB_ID__/detector-mqtt_amd64:1.0.0

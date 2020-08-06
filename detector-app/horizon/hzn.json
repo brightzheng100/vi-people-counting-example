@@ -1,5 +1,6 @@
 {
     "MetadataVars": {
+        "DOCKER_IMAGE_BASE": "quay.io/brightzheng100/detector-app",
         "SERVICE_NAME": "detector-app",
         "SERVICE_VERSION": "1.0.0"
     }

@@ -1,0 +1,50 @@
+{
+  "label": "Deployment Policy for $SERVICE_NAME",
+  "description": "Deployment Policy for $SERVICE_NAME",
+  "service": {
+    "name": "$SERVICE_NAME",
+    "org": "$HZN_ORG_ID",
+    "arch": "$ARCH",
+    "serviceVersions": [
+      {
+        "version": "1.0.0",
+        "priority":{}
+      }
+    ]
+  },
+  "properties": [
+  ],
+  "constraints": [
+    "visual_inferencing_workstation == yes",
+    "openhorizon.arch == amd64"
+  ],
+  "userInput": [
+    {
+      "serviceOrgid": "$HZN_ORG_ID",
+      "serviceUrl": "$SERVICE_NAME",
+      "serviceVersionRange": "[0.0.0,INFINITY)",
+      "inputs": [
+        {
+          "name": "CAM_URL",
+          "value": "__CAM_URL__"
+        },
+        {
+          "name": "EVENTSTREAMS_BROKER_URLS",
+          "value": ""
+        },
+        {
+          "name": "EVENTSTREAMS_API_KEY",
+          "value": ""
+        },
+        {
+          "name": "EVENTSTREAMS_PUB_TOPIC",
+          "value": ""
+        },
+        {
+          "name": "SLEEP_BETWEEN_CALLS",
+          "value": "__SLEEP_BETWEEN_CALLS__"
+        }
+      ]
+    }
+  ]
+}

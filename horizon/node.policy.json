@@ -1,0 +1,22 @@
+{
+  "properties": [
+    { 
+      "name": "vendor", "value": "Ubuntu"
+    },
+    { 
+      "name": "code", "value": "Xenial"
+    },
+    { 
+      "name": "geo", "value": "SGP"
+    },
+    
+    { 
+      "name": "visual_inferencing_workstation", "value": "yes"
+    },
+    { 
+      "name": "webcam_attached", "value": "yes"
+    }
+  ],
+  "constraints": [
+  ]
+}

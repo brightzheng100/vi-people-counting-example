@@ -4,7 +4,7 @@ This is a very simple visual inferencing demo application, inspired by [MegaMosq
 
 ## Architecture
 
-![Architecture Diagram](./architecture.svg)
+![Architecture Diagram](misc/architecture.png)
 
 This is a microservices-based architecture, with a couple of components:
 
@@ -14,7 +14,7 @@ This is a microservices-based architecture, with a couple of components:
 - `detector-mqtt`: A simple mqtt broker for communication between `detector-app` and `detector-monitor`
 - `detector-cam`: A RESTful service to drive webcam for instant photo taking
 
-> Note: I've built and tested it in my MacBook, but it should work in other environment too.
+> Note: I've built and tested it in my MacBook Pro, Ubuntu Bionic/Xenial VM, so it should work in other environment too.
 
 ## Getting Started
 
@@ -58,10 +58,11 @@ export CAM_URL=https://upload.wikimedia.org/wikipedia/commons/9/9a/Backstreet_Bo
 
 # Update the variables accordingly
 cat docker-compose.yaml | \
-    sed "s|__DOCKERHUB_ID|${DOCKERHUB_ID}|g" | \
-    sed "s|__CAM_URL|${CAM_URL}|g" | \
-    sed "s|__DEFAULT_CAM_URL|${CAM_URL}|g" | \
-    sed "s|__HZN_DEVICE_ID|$(hostname)|g" | \
+    sed "s|__DOCKERHUB_ID__|${DOCKERHUB_ID}|g" | \
+    sed "s|__CAM_URL__|${CAM_URL}|g" | \
+    sed "s|__DEFAULT_CAM_URL__|${CAM_URL}|g" | \
+    sed "s|__HZN_DEVICE_ID__|$(hostname)|g" | \
+    sed "s|__SLEEP_BETWEEN_CALLS__|5|g" \
     > _docker-compose.yaml
 
 # Start up Docker Compose, based on the generated _docker-compose.yaml
@@ -92,6 +93,8 @@ make push-local
 
 ### Clean Up
 
+Press CTL + C to stop the Docker Compose if it's still running, and then:
+
 ```sh
 # Delete the running containers and remove the local images
 make clean
@@ -107,6 +110,8 @@ docker network rm detector-network
 In MacOS, there has no `/dev/video0` device and we have less control on camera, especially when using Docker Desktop which is built based on HyperKit.
 
 So if we want to run `detector-cam` Camera Service in MacOS, we may need to run that container in a Linux-based `docker-machine` VM.
+
+We can try it out in a Docker Machine VM, on VirtualBox.
 
 #### Prerequisites
 
@@ -128,7 +133,6 @@ $ docker-machine create -d virtualbox \
   --virtualbox-cpu-count=2 \
   --virtualbox-memory=2048 \
   --virtualbox-disk-size=100000 \
-  --virtualbox-boot2docker-url https://github.com/gzupark/boot2docker-webcam-mac/releases/download/18.06.1-ce-usb/boot2docker.iso \
   ${DOCKER_MACHINE}
 
 # Stop it to configure stuff
@@ -172,15 +176,16 @@ $ export DOCKERHUB_ID=quay.io/brightzheng100
 # Just make sure we're working with the local Docker env
 $ eval $(docker-machine env -u)
 
-# Now re-run the detector-app to pick up the source, from webcam
+# Now re-run the detector-app to pick up the photo source, from webcam
 $ export CAM_URL=http://$(docker-machine ip ${DOCKER_MACHINE}):8888
 
 # Genereate the docker compose file
-$ cat docker-compose.yaml | \
-    sed "s|__DOCKERHUB_ID|${DOCKERHUB_ID}|g" | \
-    sed "s|__CAM_URL|${CAM_URL}|g" | \
-    sed "s|__DEFAULT_CAM_URL|${CAM_URL}|g" | \
-    sed "s|__HZN_DEVICE_ID|$(hostname)|g" | \
+cat docker-compose.yaml | \
+    sed "s|__DOCKERHUB_ID__|${DOCKERHUB_ID}|g" | \
+    sed "s|__CAM_URL__|${CAM_URL}|g" | \
+    sed "s|__DEFAULT_CAM_URL__|${CAM_URL}|g" | \
+    sed "s|__HZN_DEVICE_ID__|$(hostname)|g" | \
+    sed "s|__SLEEP_BETWEEN_CALLS__|5|g" \
     > _docker-compose.yaml
 
 # Start up Docker Compose
@@ -189,6 +194,16 @@ $ docker-compose -f _docker-compose.yaml up
 
 Similarly, we can access the monitor web app at: http://localhost:5200/.
 But this time, the Facetime HD camera will capture instant photos for visual inferencing!
+
+### Run such Visual Inferencing at Edge Sites, at scale
+
+While rolling out such workstations to many Edge Sites, we need an Edge Solution to manage all these, at scale.
+
+The architcture will be evolving to something like this:
+
+![Architecture Diagram With IEAM](misc/architecture-with-ieam.png)
+
+Please refer to [here](IEAM.md) for detailed guide.
 
 ## FAQ
 

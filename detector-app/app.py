@@ -47,10 +47,10 @@ if '' == CAM_URL:
     # Use the IP Address provided by the Makefile (for dev purposes only)
     CAM_URL = DEFAULT_CAM_URL
   else:
-    # If `restcam` is in Horizon requiredServices, then its name can be used
+    # If cam service is in Horizon requiredServices, then its name can be used
     try:
-      addr = socket.gethostbyname('monitor-cam')
-      CAM_URL = 'http://' + addr + ':8888/'
+      addr = socket.gethostbyname('detector-cam')
+      CAM_URL = 'http://' + addr + ':80/'
     except:
       # If all else fails, just give 'em Queen
       CAM_URL = 'https://upload.wikimedia.org/wikipedia/commons/e/e7/QueenPerforming1977.jpg'

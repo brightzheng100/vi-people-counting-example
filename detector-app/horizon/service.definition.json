@@ -8,14 +8,15 @@
   "sharable": "singleton",
   "requiredServices": [
     { "org": "$HZN_ORG_ID", "url": "detector-service", "version": "1.0.0", "arch": "$ARCH" },
-    { "org": "$HZN_ORG_ID", "url": "mqtt", "version": "1.0.0", "arch": "$ARCH" }
+    { "org": "$HZN_ORG_ID", "url": "detector-cam", "version": "1.0.0", "arch": "$ARCH" },
+    { "org": "$HZN_ORG_ID", "url": "detector-mqtt", "version": "1.0.0", "arch": "$ARCH" }
   ],
   "userInput": [
     {
       "label": "",
       "name": "CAM_URL",
       "type": "string",
-      "defaultValue": ""
+      "defaultValue": "http://detector-cam:8888/"
     },
     {
       "label": "",
@@ -34,12 +35,19 @@
       "name": "EVENTSTREAMS_PUB_TOPIC",
       "type": "string",
       "defaultValue": ""
+    },
+    {
+      "label": "",
+      "name": "SLEEP_BETWEEN_CALLS",
+      "type": "string",
+      "defaultValue": "5"
     }
   ],
   "deployment": {
     "services": {
       "$SERVICE_NAME": {
-        "image": "${DOCKER_IMAGE_BASE}_$ARCH:$SERVICE_VERSION"
+        "image": "${DOCKER_IMAGE_BASE}_$ARCH:$SERVICE_VERSION",
+        "network": "host"
       }
     }
   }

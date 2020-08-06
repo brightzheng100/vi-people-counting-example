@@ -17,8 +17,13 @@
     "services": {
       "$SERVICE_NAME": {
         "image": "${DOCKER_IMAGE_BASE}_$ARCH:$SERVICE_VERSION",
-        "ports": [ { "HostPort":"8888:80/tcp", "HostIP": "0.0.0.0" } ],
-        "privileged": true
+        "network": "host",
+        "privileged": true,
+        "ports": [
+          {
+            "HostPort":"8888:80/tcp"
+          }
+        ]
       }
     }
   }

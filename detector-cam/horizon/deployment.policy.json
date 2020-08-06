@@ -1,0 +1,23 @@
+{
+  "label": "Deployment Policy for $SERVICE_NAME",
+  "description": "Deployment Policy for $SERVICE_NAME",
+  "service": {
+    "name": "$SERVICE_NAME",
+    "org": "$HZN_ORG_ID",
+    "arch": "$ARCH",
+    "serviceVersions": [
+      {
+        "version": "1.0.0",
+        "priority":{}
+      }
+    ]
+  },
+  "properties": [
+  ],
+  "constraints": [
+    "visual_inferencing_workstation == yes",
+    "openhorizon.arch == amd64",
+    "webcam_attached == yes"
+  ],
+  "userInput": []
+}
