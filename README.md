@@ -1,6 +1,6 @@
 # Visual Inferencing Demo for Counting People
 
-This is a very simple visual inferencing demo application, inspired by [MegaMosquito/achatina](https://github.com/MegaMosquito/achatina), for counting people by given static / camera-driven photos.
+This is a very simple visual inferencing demo application, inspired by [YOLO/Darknet](https://github.com/AlexeyAB/darknet), an open source neural network framework written in C and CUDA, and the wrapping effort from [MegaMosquito/achatina](https://github.com/MegaMosquito/achatina), for counting people by given static / camera-driven photos.
 
 ## Architecture
 
@@ -22,8 +22,8 @@ This is a microservices-based architecture, with a couple of components:
 
 ```sh
 # Clone and switch to it
-git clone https://github.com/brightzheng100/people-counting-example.git
-cd people-counting-example
+git clone https://github.com/brightzheng100/vi-people-counting-example.git
+cd vi-people-counting-example
 
 # Expose variables, change to yours if you want
 export DOCKERHUB_ID=quay.io/brightzheng100

@@ -62,8 +62,8 @@ Let's do this within our laptop.
 
 ```sh
 # Clone the repo
-git clone https://github.com/brightzheng100/people-counting-example
-cd people-counting-example
+git clone https://github.com/brightzheng100/vi-people-counting-example
+cd vi-people-counting-example
 
 # Create a temporary folder
 mkdir _edge-node-files-x86_64-Linux && cd _edge-node-files-x86_64-Linux
@@ -112,7 +112,7 @@ tar -tvf agentInstallFiles-x86_64-Linux.tar.gz
 ```sh
 # Assuming we're still in the folder created by previous step
 $ pwd
-.../people-counting-example/_edge-node-files-x86_64-Linux
+.../vi-people-counting-example/_edge-node-files-x86_64-Linux
 
 # Copy over the files to our Edge Node
 $ scp agentInstallFiles-x86_64-Linux.tar.gz key.txt ${EDGE_NODE_USER}@${EDGE_NODE_IP}:~/
@@ -239,7 +239,7 @@ Please note that there are 3 major ways to setup Edge Nodes, at scale:
 ```sh
 # Assuming we're still in the folder created by previous step
 pwd
-.../people-counting-example/_edge-node-files-x86_64-Linux
+.../vi-people-counting-example/_edge-node-files-x86_64-Linux
 
 # Export the auth with the key
 eval export $(cat agent-install.cfg)
