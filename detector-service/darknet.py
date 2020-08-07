@@ -54,8 +54,7 @@ class METADATA(Structure):
     _fields_ = [("classes", c_int),
                 ("names", POINTER(c_char_p))]
 
-#lib = CDLL("/home/pjreddie/documents/darknet/libdarknet.so", RTLD_GLOBAL)
-lib = CDLL("/darknet/libdarknet.so", RTLD_GLOBAL)
+lib = CDLL("/app/libdarknet.so", RTLD_GLOBAL)
 lib.network_width.argtypes = [c_void_p]
 lib.network_width.restype = c_int
 lib.network_height.argtypes = [c_void_p]
@@ -175,9 +174,9 @@ from PIL import Image, ImageDraw
 # Configuration constants
 FLASK_BIND_ADDRESS = '0.0.0.0'
 FLASK_PORT = 80
-#LOGO_IMAGE = '/o-h.png'
+#LOGO_IMAGE = '/app/o-h.png'
 #LOGO_SIZE = (11,10)
-LOGO_IMAGE = '/logo.png'
+LOGO_IMAGE = '/app/logo.png'
 LOGO_SIZE = (27,13)
 INCOMING_IMAGE = '/tmp/incoming.jpg'
 OUTGOING_IMAGE = '/tmp/outgoing.jpg'
@@ -203,8 +202,8 @@ if __name__ == "__main__":
 
   # Load the neural network and metadata about the classes
   global net
-  net = load_net(config, weights, 0)
   global meta
+  net = load_net(config, weights, 0)
   meta = load_meta(metadata)
 
   # Configure REST server args

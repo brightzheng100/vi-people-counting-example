@@ -24,7 +24,7 @@ dev: validate-dockerhubid
 	  --name $(SERVICE_NAME) \
 	  --network detector-network --network-alias $(SERVICE_NAME) \
 	  -v `pwd`:/outside \
-	  $(DOCKERHUB_ID)/$(SERVICE_NAME)_$(ARCH):$(SERVICE_VERSION) /bin/bash
+	  $(DOCKERHUB_ID)/$(SERVICE_NAME)_$(ARCH):$(SERVICE_VERSION) /bin/sh
 
 test: validate-dockerhubid
 	-docker rm -f $(SERVICE_NAME) 2>/dev/null || :

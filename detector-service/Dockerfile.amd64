@@ -1,35 +1,40 @@
-FROM ubuntu:bionic
+FROM ubuntu:bionic as builder
 
 # Install build tools
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        ca-certificates git make g++ python-pip python-setuptools python-dev zlib1g-dev libjpeg-dev wget curl jq
-
-# Required libraries
-RUN pip install wheel
-RUN pip install flask requests pillow
+        ca-certificates git make g++ python-pip python-setuptools python-dev zlib1g-dev libjpeg-dev
 
 # Download and build the latest darknet
-WORKDIR /
-RUN git clone https://github.com/pjreddie/darknet
-WORKDIR /darknet
-RUN make
+RUN git clone https://github.com/pjreddie/darknet && \
+    (cd darknet && make)
+
+
+## FINAL
+FROM ubuntu:bionic
+
+# Install necessary components
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python-pip python-setuptools zlib1g-dev libjpeg-dev && \
+    rm -rf /var/lib/apt/lists && \
+    pip install --upgrade pip && \
+    pip install --no-cache-dir wheel flask requests pillow
+
+# Make the workdir
+RUN mkdir /app
+WORKDIR /app
 
 # Get YOLO cfg and weights files
-WORKDIR /darknet
-#RUN wget -O yolo.cfg https://raw.githubusercontent.com/pjreddie/darknet/master/cfg/yolov2-tiny.cfg
-RUN wget -O yolo.cfg https://raw.githubusercontent.com/pjreddie/darknet/master/cfg/yolov3.cfg
-#RUN wget -O yolo.weights https://pjreddie.com/media/files/yolov2-tiny.weights
-RUN wget -O yolo.weights https://pjreddie.com/media/files/yolov3.weights
+ADD https://raw.githubusercontent.com/pjreddie/darknet/master/cfg/yolov3.cfg /app/yolo.cfg
+ADD https://pjreddie.com/media/files/yolov3.weights /app/yolo.weights
 
-# Copy over the logo(s)
-COPY o-h.png /
-COPY logo.png /
-
-# Copy over the darknet and webserver code
-COPY darknet.py /
+# Copy over the files
+COPY --from=builder /darknet/libdarknet.so /app
+COPY --from=builder /darknet/cfg/coco.data /app
+COPY --from=builder /darknet/data /app/data
+COPY logo.png /app
+COPY darknet.py /app
 
 # Startup the daemon
-WORKDIR /darknet
-CMD ["python", "/darknet.py", "yolo.cfg", "yolo.weights", "cfg/coco.data"]
-
+CMD ["python", "darknet.py", "yolo.cfg", "yolo.weights", "coco.data"]
