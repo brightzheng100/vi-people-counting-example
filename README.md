@@ -4,7 +4,7 @@ This is a very simple visual inferencing demo application, inspired by [MegaMosq
 
 ## Architecture
 
-![Architecture Diagram](misc/architecture.png)
+![Architecture Diagram](misc/architecture.jpg)
 
 This is a microservices-based architecture, with a couple of components:
 
@@ -55,7 +55,11 @@ docker network create detector-network
 
 # Expose variables
 export DOCKERHUB_ID="quay.io/brightzheng100"
-export CAM_URL="https://upload.wikimedia.org/wikipedia/commons/9/9a/Backstreet_Boys_2019_by_Glenn_Francis.jpg"
+
+# Some sample photos randomly picked from Internet, feel free to try it out
+# Credit to all the hosting websites!!
+export CAM_URL="https://kdrapop.com/wp-content/uploads/2019/10/twice-2019-bb-japan-95-billboard-1548-1-1024x577.jpg"
+#export CAM_URL="https://upload.wikimedia.org/wikipedia/commons/9/9a/Backstreet_Boys_2019_by_Glenn_Francis.jpg"
 #export CAM_URL=https://steemitimages.com/DQmR4ms4BbAp763ttDF8juEu8KyoR2CrVc7TDdmxYfTRYDG/happy-people-1050x600.jpg
 
 # Update the variables accordingly and up
@@ -227,6 +231,6 @@ While rolling out such workstations to many Edge Sites, we need an Edge Solution
 
 The architcture will be evolving to something like this:
 
-![Architecture Diagram With IEAM](misc/architecture-with-ieam.png)
+![Architecture Diagram With IEAM](misc/architecture-with-ieam.jpg)
 
 Please refer to [here](IEAM.md) for the detailed guide.

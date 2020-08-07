@@ -5,7 +5,7 @@ And you can imagine how easily to roll out such Edge Nodes to many sites, which 
 
 ## Architecture
 
-![Architecture Diagram With IEAM](misc/architecture-with-ieam.png)
+![Architecture Diagram With IEAM](misc/architecture-with-ieam.jpg)
 
 ## Assumptions
 
@@ -318,7 +318,7 @@ We can visualize the managed Edge Nodes and services through IEAM Hub.
 
 For example:
 
-![IEAM Hub](misc/ieam-hub.png)
+![IEAM Hub](misc/ieam-hub.jpg)
 
 ### Live Visual Inferencing for people counting
 
@@ -328,7 +328,7 @@ http://192.168.56.101:5200
 
 As expected, the camera will capture live photos for visual inferencing and count the people:
 
-![Monitor UI With IEAM](misc/monitor-ui-with-ieam.png)
+![Monitor UI With IEAM](misc/monitor-ui-with-ieam.jpg)
 
 Well, here just myself so nothing fancy but please imagine!
 
