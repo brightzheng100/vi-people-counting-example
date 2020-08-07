@@ -101,7 +101,7 @@ We can access the simple monitor web app at: http://localhost:5200/
 Do this if you want to release the images.
 
 ```sh
-# Expose variables, change to yours if you want
+# You have to change to yours
 export DOCKERHUB_ID=quay.io/brightzheng100
 
 # Login the repository, be it DockerHub or quay.io -- in my case it's quay.io
@@ -188,8 +188,8 @@ $ vboxmanage controlvm "${DOCKER_MACHINE}" webcam attach .1
 
 # Run the restcam container
 (
-	export DOCKERHUB_ID=quay.io/brightzheng100
-	cd detector-cam && make run-in-mac
+  export DOCKERHUB_ID=quay.io/brightzheng100
+  cd detector-cam && make run-in-mac
 )
 ```
 
@@ -213,10 +213,11 @@ cat docker-compose.yaml | \
     sed "s|__DEFAULT_CAM_URL__|${CAM_URL}|g" | \
     sed "s|__HZN_DEVICE_ID__|$(hostname)|g" | \
     sed "s|__SLEEP_BETWEEN_CALLS__|5|g" | \
-	docker-compose -f - up
+    docker-compose -f - up
 ```
 
 Similarly, we can access the monitor web app at: http://localhost:5200/.
+
 But this time, the Facetime HD camera will capture instant photos for visual inferencing!
 
 Do remember to detach the camera as part of the clean up:
