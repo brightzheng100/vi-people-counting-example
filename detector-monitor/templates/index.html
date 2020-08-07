@@ -43,14 +43,20 @@
       <td><img id="detect" height="600px" src="/images/detect.jpg" alt="Prediction Image" /></td>
       <td>
         <table class="center">
-          {% for entity in entities %}
           <tr>
             <td style="white-space:nowrap"> &nbsp; 
               <p><div class="detection-title"> Detected People </div></p>
-              <p><div id="classes" class="detection-number"> {{ entity["details"]|length }} </div></p>
+              <p>
+                <div id="classes" class="detection-number">
+                  {% if entities|length > 0 %}
+                    {{ entities[0]["details"]|length }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </div>
+              </p>
             </td>
           </tr>
-          {% endfor %}
         </table>
       </td>
     </tr>
@@ -84,7 +90,13 @@
         const response = await fetch("/json");
         const j = await response.json();
         var when = new Date(j.detect.date * 1000);
-        var c = j.detect.entities[0].details.length;
+        var c = "-";
+        try {
+          c = j.detect.entities[0].details.length.toString();
+        }
+        catch(err) {
+          ;
+        }
         var ct = j.detect.camtime;
         var it = j.detect.time;
         d_date.innerHTML = when;
