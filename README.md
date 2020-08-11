@@ -74,7 +74,7 @@ cat docker-compose.yaml | \
     sed "s|__DEFAULT_CAM_URL__|${CAM_URL}|g" | \
     sed "s|__HZN_DEVICE_ID__|$(hostname)|g" | \
     sed "s|__SLEEP_BETWEEN_CALLS__|5|g" | \
-	docker-compose -f - up
+    docker-compose -f - up
 ```
 
 > Note: Please refer to Advanced Topics for how to drive Facetime HD Camera in container in MacOS, [here](#advanced_topics). But if your Docker container can access camera directly, try this instead:
@@ -91,7 +91,7 @@ cat docker-compose-with-cam.yaml | \
     sed "s|__DEFAULT_CAM_URL__|${CAM_URL}|g" | \
     sed "s|__HZN_DEVICE_ID__|$(hostname)|g" | \
     sed "s|__SLEEP_BETWEEN_CALLS__|5|g" | \
-	docker-compose -f - up
+    docker-compose -f - up
 ```
 
 ### Monitor
