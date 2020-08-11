@@ -193,7 +193,7 @@ $ vboxmanage controlvm "${DOCKER_MACHINE}" webcam attach .1
 )
 ```
 
-Open another termimal (as to make sure we're with the "local" Docker env).
+Open another terminal (as to make sure we're with the "local" Docker env).
 
 ```sh
 # Set variables

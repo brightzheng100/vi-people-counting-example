@@ -50,7 +50,7 @@ Video Input Devices: 1
 0x8020000005ac8514
 
 # Attach the default Facetime webcam to the VM
-$ vboxmanage controlvm "${EDGE_NODE_NAME}" webcam attach .1
+$ sudo vboxmanage controlvm "${EDGE_NODE_NAME}" webcam attach .1
 ```
 
 ### Generate necessary files for Edge Node(s) by IEAM Hub Admin
@@ -162,8 +162,8 @@ $ sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 $ sudo usermod -aG docker $(whoami) # remember to log out and in again to use `docker` instead of `sudo docker`
 
 # Export the auth with the key
-$ eval export $(cat agent-install.cfg)
-$ export HZN_EXCHANGE_USER_AUTH="iamapikey:$( cat key.txt | jq -r '.apikey' )"
+$ eval export $(cat agent-install.cfg) \
+  export HZN_EXCHANGE_USER_AUTH="iamapikey:$( cat key.txt | jq -r '.apikey' )"
 
 # Define the node policy, refer to /horizon/node.policy.json,
 # which are some arbitrary attributes to be as properties and constraints
@@ -355,7 +355,7 @@ To remove the services involved:
 cd $(git rev-parse --show-toplevel)
 
 # the bundle service
-eval $(hzn util configconv -f .horizon/hzn.json)
+eval $(hzn util configconv -f horizon/hzn.json)
 hzn exchange service remove "${HZN_ORG_ID}/${SERVICE_NAME}_${SERVICE_VERSION}_amd64" -f
 ```
 
