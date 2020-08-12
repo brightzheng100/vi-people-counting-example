@@ -1,10 +1,13 @@
 {
   "properties": [
     { 
+      "name": "openhorizon.allowPrivileged", "value": "true"
+    },
+    { 
       "name": "vendor", "value": "Ubuntu"
     },
     { 
-      "name": "code", "value": "Xenial"
+      "name": "code", "value": "Bionic"
     },
     { 
       "name": "geo", "value": "SGP"
