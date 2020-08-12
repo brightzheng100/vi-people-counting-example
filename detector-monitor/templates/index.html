@@ -1,6 +1,8 @@
 <html>
 <head>
   <title>People Counting Demo</title>
+  <script type="text/javascript" src="/static/jquery.min-3.3.1.js"></script>
+  <script type="text/javascript" src="/static/socket.io.min-1.3.6.js"></script>
   <style>
     body { width: 650px; }
     table.center {
@@ -34,27 +36,28 @@
       </th>
     </tr>
     <tr>
-      <th>Device ID: {{ device_id }}</th>
+      <th> &nbsp; Device ID: 
+        <span id="detect_device"> - </span>
+      </th>
     </tr>
     <tr>
-      <th><span id="when">&nbsp;</span></th>
+      <th> &nbsp; Detect Time: 
+        <span id="detect_when"> - </span>
+      </th>
     </tr>
+    <tr><td> &nbsp; </td></tr>
     <tr>
-      <td><img id="detect" height="600px" src="/images/detect.jpg" alt="Prediction Image" /></td>
+      <td>
+        <img id="detect_image" height="600px" src="/static/wait.jpg" alt="Prediction Image"/>
+      </td>
       <td>
         <table class="center">
           <tr>
             <td style="white-space:nowrap"> &nbsp; 
-              <p><div class="detection-title"> Detected People </div></p>
-              <p>
-                <div id="classes" class="detection-number">
-                  {% if entities|length > 0 %}
-                    {{ entities[0]["details"]|length }}
-                  {% else %}
-                    -
-                  {% endif %}
-                </div>
-              </p>
+              <div class="detection-title"> Detected People </div>
+              <div id="detect_count" class="detection-number">
+                -
+              </div>
             </td>
           </tr>
         </table>
@@ -63,57 +66,34 @@
     <tr><td> &nbsp; </td></tr>
     <tr><td> &nbsp; </td></tr>
     <tr>
-      <td> &nbsp; Camera time: <span id="camtime" class="highlight"> {{ camera_time }} </span> seconds.</td>
+      <td> &nbsp; Camera Time: 
+        <span id="detect_camtime" class="highlight"> - </span> seconds.
+      </td>
     </tr>
     <tr>
-      <td> &nbsp; Inferencing time:
-          <span id="inftime" class="highlight"> {{ inferencing_time }} </span> seconds.
+      <td> &nbsp; Inferencing Time:
+          <span id="detect_inftime" class="highlight"> - </span> seconds.
       </td>
     </tr>
     <tr><td> &nbsp; </td></tr>
-    <tr>
-      <td> <p> &nbsp; <em>NOTE:</em> {{ kafka_msg }} </p></td>
-    </tr>
   </table>
   </div>
-  <script>
-    function refresh(d_image, d_date, d_classes, d_camtime, d_inftime) {
-      // auto refresh interval
-      var t = 2000;
-      (async function startRefresh() {
-        var address;
-        if(d_image.src.indexOf("?")>-1)
-          address = d_image.src.split("?")[0];
-        else
-          address = d_image.src;
-        d_image.src = address+"?time="+new Date().getTime();
-        const response = await fetch("/json");
-        const j = await response.json();
-        var when = new Date(j.detect.date * 1000);
-        var c = "-";
-        try {
-          c = j.detect.entities[0].details.length.toString();
-        }
-        catch(err) {
-          ;
-        }
-        var ct = j.detect.camtime;
-        var it = j.detect.time;
-        d_date.innerHTML = when;
-        d_classes.innerHTML = c;
-        d_camtime.innerHTML = ct;
-        d_inftime.innerHTML = it;
-        setTimeout(startRefresh, t);
-      })();
-    }
-    window.onload = function() {
-      var d_image = document.getElementById("detect");
-      var d_date = document.getElementById("when");
-      var d_classes = document.getElementById("classes");
-      var d_camtime = document.getElementById("camtime");
-      var d_inftime = document.getElementById("inftime");
-      refresh(d_image, d_date, d_classes, d_camtime, d_inftime);
-    }
+  <script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+      var socket = io.connect('http://' + document.domain + ':' + location.port);
+  
+      // listen for mqtt_message events
+      // the data is the json payload from the inferencing result
+      socket.on('mqtt_message', function(data) {
+        var json = JSON.parse(data);
+        $('#detect_device').text(json["deviceid"]);
+        $('#detect_when').text(new Date(json["detect"]["date"] * 1000));
+        $('#detect_count').text(json["detect"]["entities"][0]["details"].length);
+        $('#detect_camtime').text(json["detect"]["camtime"]);
+        $('#detect_inftime').text(json["detect"]["time"]);
+        $("#detect_image").attr('src', "data:image/jpeg;charset=utf-8;base64," + json["detect"]["image"]);
+      })
+    });
   </script>
 </body>
 </html>
