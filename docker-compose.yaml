@@ -2,6 +2,8 @@ version: '2'
 services:
   # detector-mqtt
   detector-mqtt:
+    hostname: 'detector-mqtt'
+    restart: always
     image: __DOCKERHUB_ID__/detector-mqtt_amd64:1.0.0
     networks:
       - detector-network
@@ -10,6 +12,8 @@ services:
 
   # detector-service
   detector-service:
+    hostname: 'detector-service'
+    restart: always
     image: __DOCKERHUB_ID__/detector-service_amd64:1.0.0
     networks:
       - detector-network
@@ -18,6 +22,8 @@ services:
 
   # detector-app
   detector-app:
+    hostname: 'detector-app'
+    restart: always
     image: __DOCKERHUB_ID__/detector-app_amd64:1.0.0
     networks:
       - detector-network
@@ -33,6 +39,8 @@ services:
 
   # detector-monitor
   detector-monitor:
+    hostname: 'detector-monitor'
+    restart: always
     image: __DOCKERHUB_ID__/detector-monitor_amd64:1.0.0
     networks:
       - detector-network
