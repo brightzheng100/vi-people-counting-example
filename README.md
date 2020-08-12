@@ -3,8 +3,8 @@
 This is a very simple visual inferencing demo application, inspired by [YOLO/Darknet](https://github.com/AlexeyAB/darknet), an open source neural network framework written in C and CUDA, and the wrapping effort from [MegaMosquito/achatina](https://github.com/MegaMosquito/achatina), for counting people by given static / camera-driven photos.
 
 > Note: 
-> This demo app uses just the CPU, instead of GPU, for visual inferencing, so performance is not the key focus.
-> However, there is option to use GPU for building real world visual inferencing apps.
+> This demo app uses just the normal CPU, instead of GPU, for visual inferencing, so performance might not be that ideal.
+> However, there is option from the upstream project to use GPU for building real world visual inferencing apps.
 
 
 ## Architecture
