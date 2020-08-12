@@ -38,10 +38,10 @@ make build-local
 
 # Check the Docker images built
 docker images | grep detector
-quay.io/brightzheng100/detector-service_amd64       1.0.0     60ae546acc3f        About a minute ago   688MB
-quay.io/brightzheng100/detector-mqtt_amd64          1.0.0     c7196c80ba5b        About a minute ago   10.1MB
-quay.io/brightzheng100/detector-monitor_amd64       1.0.0     b402056b5f36        About a minute ago   84.1MB
-quay.io/brightzheng100/detector-cam_amd64           1.0.0     1f97bf2571b5        About a minute ago   118MB
+quay.io/brightzheng100/detector-service_amd64       1.0.0     60ae546acc3f        About a minute ago   403MB
+quay.io/brightzheng100/detector-mqtt_amd64          1.0.0     c7196c80ba5b        About a minute ago   8.14MB
+quay.io/brightzheng100/detector-monitor_amd64       1.0.0     b402056b5f36        About a minute ago   100MB
+quay.io/brightzheng100/detector-cam_amd64           1.0.0     1f97bf2571b5        About a minute ago   117MB
 quay.io/brightzheng100/detector-app_amd64           1.0.0     e6ec56508214        2 minutes ago        95.7MB
 ```
 
