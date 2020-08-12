@@ -42,7 +42,7 @@ test-end:
 run: validate-dockerhubid
 	@docker network create detector-network 2>/dev/null || :
 	-docker rm -f $(SERVICE_NAME) 2>/dev/null || :
-	docker run -d -p 127.0.0.1:1883:1883 \
+	docker run -d -p 0.0.0.0:1883:1883 \
 		--name $(SERVICE_NAME) \
 		--network detector-network --network-alias $(SERVICE_NAME) \
 		$(DOCKERHUB_ID)/$(SERVICE_NAME)_$(ARCH):$(SERVICE_VERSION)

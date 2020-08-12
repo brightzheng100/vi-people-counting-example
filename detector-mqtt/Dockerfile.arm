@@ -1,9 +1,10 @@
 FROM alpine:latest
 
-RUN apk update \
-    && apk add --no-cache bash mosquitto \
-    && rm -fr /tmp/*
+RUN apk update && \
+    apk add --no-cache mosquitto && \
+    rm -fr /tmp/* && \
+    mkdir -p /var/lib/mosquitto
 
-COPY mqtt.sh /
-WORKDIR /
-CMD ["./mqtt.sh"]
+COPY mosquitto.conf /etc/mosquitto/
+
+CMD ["mosquitto", "-c", "/etc/mosquitto/mosquitto.conf"]
