@@ -1,0 +1,74 @@
+{
+  "org": "$HZN_ORG_ID",
+  "label": "People Counting Services for $ARCH",
+  "url": "$SERVICE_NAME",
+  "version": "$SERVICE_VERSION",
+  "arch": "$ARCH",
+  "public": true,
+  "sharable": "singleton",
+  "requiredServices": [],
+  "userInput": [
+    {
+      "label": "",
+      "name": "CAM_URL",
+      "type": "string",
+      "defaultValue": ""
+    },
+    {
+      "label": "",
+      "name": "EVENTSTREAMS_BROKER_URLS",
+      "type": "string",
+      "defaultValue": ""
+    },
+    {
+      "label": "",
+      "name": "EVENTSTREAMS_API_KEY",
+      "type": "string",
+      "defaultValue": ""
+    },
+    {
+      "label": "",
+      "name": "EVENTSTREAMS_PUB_TOPIC",
+      "type": "string",
+      "defaultValue": ""
+    },
+    {
+      "label": "",
+      "name": "SLEEP_BETWEEN_CALLS",
+      "type": "string",
+      "defaultValue": "5"
+    }
+  ],
+  "deployment": {
+    "services": {
+      "detector-service": {
+        "image": "__DOCKERHUB_ID__/detector-service_$ARCH:$SERVICE_VERSION",
+        "ports": [
+          {
+            "HostPort":"5252:80/tcp"
+          }
+        ]
+      },
+      "detector-mqtt": {
+        "image": "__DOCKERHUB_ID__/detector-mqtt_$ARCH:$SERVICE_VERSION",
+        "ports": [
+          {
+            "HostPort":"1883:1883/tcp"
+          }
+        ]
+      },
+      "detector-monitor": {
+        "image": "__DOCKERHUB_ID__/detector-monitor_$ARCH:$SERVICE_VERSION",
+        "ports": [
+          {
+            "HostPort":"5200:5200/tcp"
+          }
+        ]
+      },
+      "detector-app": {
+        "image": "__DOCKERHUB_ID__/detector-app_$ARCH:$SERVICE_VERSION"
+      }
+    }
+  }
+}
+
