@@ -239,4 +239,8 @@ The architcture will be evolving to something like this:
 
 ![Architecture Diagram With IEAM](misc/architecture-with-ieam.jpg)
 
-Please refer to [here](IEAM.md) for the detailed guide.
+I've provided two options while embracing edge computing:
+- Please refer to [README-OSS](README-OSS.md) for the detailed end-to-end guide for how to play with OSS Open Horizon;
+- Please refer to [README-IEAM](README-IEAM.md) for the detailed end-to-end guide for how to play with IBM Edge Application Manager (IEAM).
+
+Enjoy!

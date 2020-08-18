@@ -20,9 +20,9 @@ Let's assume that:
 
 Let's assume that a Ubuntu Bionic VM has been set up in VirtualBox.
 
-By the way, there is a permission issue which will cause the VM crash once the app tries to connect the Facetime HD Camera.
+By the way, if you're running VirtualBox in your MacBook, there is a permission issue which will cause the VM crash once the app tries to connect the Facetime HD Camera.
 My current workaround is to start VirtualBox as root: `sudo virtualbox`.
-Check out the forum post here for the follow-up: https://forums.virtualbox.org/viewtopic.php?f=8&t=99299&p=481734#p481734
+Check out the forum post I raised here for the follow-up: https://forums.virtualbox.org/viewtopic.php?f=8&t=99299&p=481734#p481734
 
 We need to stop the VM and do some configuration.
 
@@ -366,3 +366,12 @@ Log into the Edge Node:
 ```sh
 hzn unregister -f
 ```
+
+### Detach the webcam
+
+To detach the webcam from the VM, run this in our laptop (instead of in the VM):
+
+```sh
+sudo vboxmanage controlvm "${EDGE_NODE_NAME}" webcam detach .1
+```
+
