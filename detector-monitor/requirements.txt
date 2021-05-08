@@ -1,4 +1,4 @@
-eventlet==0.26.1
+eventlet==0.31.0
 Flask==1.1.2
 Flask-MQTT==1.1.1
 Flask-SocketIO==4.3.1
